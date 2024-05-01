@@ -3,6 +3,7 @@ import { Button, View, Text } from 'react-native'
 import { useRoute } from '@react-navigation/native'
 import Reservation from '../components/Reservation'
 import { useState, useEffect } from 'react'
+import Piece from '../components/Piece'
 export default function PiecesScreen() {
   const route = useRoute()
   const id = route.params?.idReservation
@@ -11,7 +12,7 @@ export default function PiecesScreen() {
   const [isLoading, setLoading] = useState(true)
 
   useEffect(() => {
-    console.log(link + id)
+    console.log("JAMBON : "+link + id)
     fetch(link + id)
       .then(function (response) {
         console.log('traitement réponse')
@@ -33,22 +34,23 @@ export default function PiecesScreen() {
   if (isLoading) {
     return (
       <View>
-        <Text>EN CHARGEMENT</Text>
+        <Text>EN CHARGEMENT des pièces</Text>
       </View>
     )
   } else {
     return (
       <View>
         <Text>PiecesScreen</Text>
-        {/* {lesPieces.map((unePiece, index) => (
-          <Reservation
+        { 
+      
+        lesPieces.map((unePiece, index) => (
+          <Piece
             key={index}
-            idReservation={uneReservation.id}
-            datedeb={uneReservation.dateDebut}
-            datefin={uneReservation.dateFin}
-            logement={uneReservation.Logement}
+            infos={unePiece.infos}
+            equipements={unePiece.equipements}
+            listePhoto={unePiece.listePhoto}
           />
-        ))} */}
+        )) }
       </View>
     )
   }
