@@ -5,7 +5,6 @@ import { Button, View, Text } from 'react-native'
 import Photo from './Photo';
 export default function Equipement(props) {
     const navigation = useNavigation()
-    console.log(props)
     return (<View><Text>{props.infos.libelle}</Text>
     {props.infos.listePhoto.map((unePhoto, index) => (
         <Photo

@@ -3,7 +3,6 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Button, View,Image,  Text } from 'react-native'
 export default function Photo(props) {
-    console.log( "CANARD" + props)
     const styles = StyleSheet.create({
         
         tinyLogo: {
