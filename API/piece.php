@@ -22,7 +22,7 @@ if ($connexion["succes"]) {
 
                     $lesPieces = array();
                     foreach ($lesIdDesPieces as $Id) {
-                        //Etape 2 : Recupérer type, Ancienne note et ancien commentaire
+                        //Etape 2 : Recupérer id, type, Ancienne note et ancien commentaire
                         $sql = "SELECT COUNT(*) AS nbAncienEtatLieux FROM etatlieux WHERE idPiece = :unId";
                         $req = $pdo->prepare($sql);
                         $req->bindParam(":unId", $Id["id"], \PDO::PARAM_INT);
@@ -48,7 +48,7 @@ if ($connexion["succes"]) {
                                 }
                             } else {
                                 //La piece n'a JAMAIS eu d'anciens etats des lieux
-                                $sql = "SELECT type FROM piece WHERE id = :unId";
+                                $sql = "SELECT id, type FROM piece WHERE id = :unId";
                                 $req = $pdo->prepare($sql);
                                 $req->bindParam(":unId", $Id["id"], \PDO::PARAM_INT);
                                 $res = $req->execute();
