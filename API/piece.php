@@ -85,7 +85,7 @@ if ($connexion["succes"]) {
                             break;
                         }
 
-                        //Etape 3.2 : Recupérer les Infos Equipement (ID, Libelle, AncienneNote, AncienCcommentaire)
+                        //Etape 3.2 : Recupérer les Infos Equipement (ID, Libelle, AncienneNote, AncienCommentaire)
                         $lesEquipements = array();
                         foreach ($lesIdDesEquipement as $Equipement) {
                             $sql = "SELECT COUNT(*) AS nbAncienEtatEquipement FROM etatequipement WHERE idEquipement = :unId";
@@ -110,7 +110,7 @@ if ($connexion["succes"]) {
                                         $unEquipement = $req->fetch(\PDO::FETCH_ASSOC);
 
                                         //Etape 3.3 Recupérer les photos des equipements
-                                        $sql = "SELECT lien FROM photo WHERE idEquipement = :unId AND idEtatLieux IS NOT NULL LIMIT 50";
+                                        $sql = "SELECT lien FROM photo WHERE idEquipement = :unId AND idEtatLieux IS NOT NULL LIMIT 4";
                                         $req = $pdo->prepare($sql);
                                         $req->bindParam(":unId", $Equipement["id"], \PDO::PARAM_INT);
                                         $res = $req->execute();
