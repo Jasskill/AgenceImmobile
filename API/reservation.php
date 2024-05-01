@@ -39,14 +39,18 @@ if ($connexion["succes"]) {
                     }
                     if ($lesReservations != array()) {
                         creerJson(200, $lesReservations);
+                        break;
                     } else {
                         creerJson(404, "Not Found");
+                        break;
                     }
                 } else {
                     creerJson(500, "Internal Server Error");
+                    break;
                 }
             } else {
                 creerJson(400, "Bad request");
+                break;
             }
 
             break;

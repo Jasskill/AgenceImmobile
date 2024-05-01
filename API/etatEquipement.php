@@ -18,14 +18,18 @@ if ($connexion["succes"]) {
                     $lesEtatsDEquipements = $req->fetchAll(\PDO::FETCH_ASSOC);
                     if ($lesEtatsDEquipements != array()) {
                         creerJson(200, $lesEtatsDEquipements);
+                        break;
                     } else {
                         creerJson(404, "Not Found");
+                        break;
                     }
                 } else {
                     creerJson(500, "Internal Server Error");
+                    break;
                 }
             } else {
                 creerJson(400, "Bad request");
+                break;
             }
             break;
         case "POST":
@@ -45,12 +49,15 @@ if ($connexion["succes"]) {
                     $id = $req->fetch(\PDO::FETCH_ASSOC);
 
                     creerJson(201, $id);
+                    break;
                 } else {
                     //error
                     creerJson(400, "Bad request");
+                    break;
                 }
             } else {
                 creerJson(400, "Bad request");
+                break;
             }
             break;
         default:
