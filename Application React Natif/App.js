@@ -3,6 +3,7 @@ import AccueilScreen from './screens/AccueilScreen'
 import ConnectScreen from './screens/ConnectScreen'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import PiecesScreen from './screens/PiecesScreen'
+import PieceDetailsScreen from './screens/PieceDetailsScreen'
 const Stack = createNativeStackNavigator()
 export default function App() {
   return (
@@ -28,7 +29,15 @@ export default function App() {
           name="PiecesScreen"
           component={PiecesScreen}
           options={{
-            headerShown: false,
+            headerShown: true,
+          }}
+        />
+
+<Stack.Screen
+          name="PieceDetailsScreen"
+          component={PieceDetailsScreen}
+          options={{
+            headerShown: true,
           }}
         />
       </Stack.Navigator>

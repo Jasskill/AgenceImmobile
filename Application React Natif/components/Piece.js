@@ -1,22 +1,31 @@
 import { useNavigation } from '@react-navigation/native'
+import React from 'react';
+import { StyleSheet } from 'react-native';
+import { Button, View, Text } from 'react-native'
 export default function Piece(props) {
   const navigation = useNavigation()
   console.log(props)
+
+  //verifier si cette pièce est présente ddans un etat lieu avec cet id reservation
+  //j'envoie id reservation +id pièce
+  //je reçois true ou false si un etat ddes lieux est nécessaire
+  //je ne sais pas si c'est le ddébut ou fin, c'est l'api qui gère
+  //je grise 'il ne faut pas d'etat des lieux (déjà fait)
   return (
     <View style={style.reservationContainer}>
-      <Text style={style.textDescription}>{props.logement.description}</Text>
+      <Text style={style.textDescription}>{props.infos.type}</Text>
       <Text style={style.textBase}>
-        {props.logement.rue}, {props.logement.codePostal}
+        {props.infos.ancienneNote}, {props.infos.ancienCommentaire}
       </Text>
       <Text style={style.textDate}>
-        Du {props.datedeb} au {props.datefin}
+        les photos
       </Text>
       <Button
         onPress={() => {
           console.log('MIAOU ' + props.idReservation)
-          // navigation.navigate('AccueilScreen', { id: 6 })
+          navigation.navigate('PieceDetailsScreen', { idPiece: props.infos.idPiece })
         }}
-        title="Voir"
+        title="Noter"
       />
     </View>
   )
