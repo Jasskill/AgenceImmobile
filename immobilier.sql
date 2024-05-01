@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1deb1
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Hôte : localhost:3306
--- Généré le : mer. 17 jan. 2024 à 16:20
--- Version du serveur : 11.2.2-MariaDB-1:11.2.2+maria~deb12
--- Version de PHP : 8.2.7
+-- Hôte : 127.0.0.1:3306
+-- Généré le : jeu. 04 avr. 2024 à 14:58
+-- Version du serveur : 11.2.2-MariaDB
+-- Version de PHP : 8.2.13
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,13 +18,16 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de données : `Immo`
+-- Base de données : `immo`
 --
+CREATE DATABASE IF NOT EXISTS `immo` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE `immo`;
 
 DELIMITER $$
 --
 -- Procédures
 --
+DROP PROCEDURE IF EXISTS `fusion`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `fusion` (`idDispo1` INT, `idDispo2` INT)   BEGIN
 
     DECLARE count, idDispoNew INT;
@@ -102,6 +105,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `fusion` (`idDispo1` INT, `idDispo2`
     END IF;
 END$$
 
+DROP PROCEDURE IF EXISTS `get_last`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `get_last` (`idDispo` INT, OUT `idOut` INT)   BEGIN
     
     DECLARE count, idDispoNew, idOut2 INT;
@@ -136,6 +140,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `get_last` (`idDispo` INT, OUT `idOu
 
 END$$
 
+DROP PROCEDURE IF EXISTS `nouvelle_dates_anterieur`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `nouvelle_dates_anterieur` (`idDispo1` INT)   BEGIN
 
     DECLARE count, idDispoNew, idReserv INT;
@@ -187,6 +192,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `nouvelle_dates_anterieur` (`idDispo
     END IF;
 END$$
 
+DROP PROCEDURE IF EXISTS `nouvelle_dates_posterieur`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `nouvelle_dates_posterieur` (`idDispo1` INT)   BEGIN
 
     DECLARE count, idDispoNew INT;
@@ -225,6 +231,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `nouvelle_dates_posterieur` (`idDisp
     END IF;
 END$$
 
+DROP PROCEDURE IF EXISTS `supprimer_reservation`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `supprimer_reservation` (`idReservation` INT)   BEGIN
     DECLARE countDispoDerive, idDispo, idDispoDerive1, idDispoDerive2, idDispoDerive3, idDispoDerive4, idReserv1, idFus1, idFus2, count INT;
     DECLARE idDispoDate DATE;
@@ -492,15 +499,18 @@ DELIMITER ;
 -- Structure de la table `disponibilite`
 --
 
-CREATE TABLE `disponibilite` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `disponibilite`;
+CREATE TABLE IF NOT EXISTS `disponibilite` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `dateDebut` date NOT NULL,
   `dateFin` date NOT NULL,
   `idLogement` int(11) NOT NULL,
   `tarif` decimal(10,0) NOT NULL,
   `valide` tinyint(1) NOT NULL,
-  `derive` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+  `derive` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idLogement` (`idLogement`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Déchargement des données de la table `disponibilite`
@@ -525,11 +535,14 @@ INSERT INTO `disponibilite` (`id`, `dateDebut`, `dateFin`, `idLogement`, `tarif`
 -- Structure de la table `equipement`
 --
 
-CREATE TABLE `equipement` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `equipement`;
+CREATE TABLE IF NOT EXISTS `equipement` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `libelle` varchar(100) NOT NULL,
-  `idPiece` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+  `idPiece` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `Equipement_Piece_FK` (`idPiece`)
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Déchargement des données de la table `equipement`
@@ -572,55 +585,80 @@ INSERT INTO `equipement` (`id`, `libelle`, `idPiece`) VALUES
 -- --------------------------------------------------------
 
 --
--- Structure de la table `etatEquipement`
+-- Structure de la table `etatequipement`
 --
 
-CREATE TABLE `etatEquipement` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `etatequipement`;
+CREATE TABLE IF NOT EXISTS `etatequipement` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `idEtatLieux` int(11) DEFAULT NULL,
   `idEquipement` int(11) NOT NULL,
   `note` int(11) DEFAULT NULL,
-  `commentaire` varchar(500) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `commentaire` varchar(500) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idEtatLieux` (`idEtatLieux`),
+  KEY `idEquipement` (`idEquipement`)
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Déchargement des données de la table `etatEquipement`
+-- Déchargement des données de la table `etatequipement`
 --
 
-INSERT INTO `etatEquipement` (`id`, `idEtatLieux`, `idEquipement`, `note`, `commentaire`) VALUES
+INSERT INTO `etatequipement` (`id`, `idEtatLieux`, `idEquipement`, `note`, `commentaire`) VALUES
 (1, 1, 1, 5, 'Bonne Etat'),
 (2, 1, 6, 5, 'Bonne Etat'),
 (3, 1, 7, 5, 'Bonne Etat'),
-(4, 2, 1, 4, 'Une des latte du lit est cassé'),
-(5, 2, 6, 5, 'Bonne Etat'),
-(6, 2, 7, 5, 'Bonne Etat'),
-(7, 3, 2, 5, 'Bonne Etat'),
-(8, 3, 8, 5, 'Bonne Etat');
+(4, 2, 2, 5, 'Bonne Etat'),
+(5, 2, 8, 5, 'Bonne Etat'),
+(6, 3, 3, 5, 'Bonne Etat'),
+(7, 3, 9, 5, 'Bonne Etat'),
+(8, 4, 4, 5, 'Bonne Etat'),
+(9, 4, 10, 5, 'Bonne Etat'),
+(10, 4, 11, 5, 'Bonne Etat'),
+(11, 5, 1, 5, 'Bonne Etat'),
+(12, 5, 6, 5, 'Bonne Etat'),
+(13, 5, 7, 5, 'Bonne Etat'),
+(14, 6, 2, 5, 'Bonne Etat'),
+(15, 6, 8, 5, 'Bonne Etat'),
+(16, 7, 3, 5, 'Bonne Etat'),
+(17, 7, 9, 5, 'Bonne Etat'),
+(18, 8, 4, 5, 'Bonne Etat'),
+(19, 8, 10, 5, 'Bonne Etat'),
+(20, 8, 11, 5, 'Bonne Etat');
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `etatLieux`
+-- Structure de la table `etatlieux`
 --
 
-CREATE TABLE `etatLieux` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `etatlieux`;
+CREATE TABLE IF NOT EXISTS `etatlieux` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `idReservation` int(11) DEFAULT NULL,
   `idPiece` int(11) DEFAULT NULL,
   `dateEtatLieux` date DEFAULT NULL,
   `note` int(11) DEFAULT NULL,
   `commentaire` varchar(500) DEFAULT NULL,
-  `DF` varchar(1) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `DF` varchar(1) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idReservation` (`idReservation`),
+  KEY `idPiece` (`idPiece`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Déchargement des données de la table `etatLieux`
+-- Déchargement des données de la table `etatlieux`
 --
 
-INSERT INTO `etatLieux` (`id`, `idReservation`, `idPiece`, `dateEtatLieux`, `note`, `commentaire`, `DF`) VALUES
+INSERT INTO `etatlieux` (`id`, `idReservation`, `idPiece`, `dateEtatLieux`, `note`, `commentaire`, `DF`) VALUES
 (1, 1, 1, '2023-12-01', 5, 'RAS', 'D'),
-(2, 1, 1, '2023-12-07', 5, 'RAS', 'F'),
-(3, 1, 2, '2023-12-01', 5, 'RAS', 'D');
+(2, 1, 2, '2023-12-01', 5, 'RAS', 'D'),
+(3, 1, 3, '2023-12-01', 5, 'RAS', 'D'),
+(4, 1, 4, '2023-12-01', 5, 'RAS', 'D'),
+(5, 1, 1, '2023-12-07', 5, 'RAS', 'F'),
+(6, 1, 2, '2023-12-07', 5, 'RAS', 'F'),
+(7, 1, 3, '2023-12-07', 5, 'RAS', 'F'),
+(8, 1, 4, '2023-12-07', 5, 'RAS', 'F');
 
 -- --------------------------------------------------------
 
@@ -628,14 +666,17 @@ INSERT INTO `etatLieux` (`id`, `idReservation`, `idPiece`, `dateEtatLieux`, `not
 -- Structure de la table `logement`
 --
 
-CREATE TABLE `logement` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `logement`;
+CREATE TABLE IF NOT EXISTS `logement` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `rue` varchar(200) NOT NULL,
   `codePostal` varchar(10) NOT NULL,
   `ville` varchar(150) NOT NULL,
   `description` varchar(255) NOT NULL,
-  `idProprietaire` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+  `idProprietaire` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `Logement_Utilisateur_FK` (`idProprietaire`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Déchargement des données de la table `logement`
@@ -655,15 +696,22 @@ INSERT INTO `logement` (`id`, `rue`, `codePostal`, `ville`, `description`, `idPr
 -- Structure de la table `photo`
 --
 
-CREATE TABLE `photo` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `photo`;
+CREATE TABLE IF NOT EXISTS `photo` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `lien` varchar(300) NOT NULL,
   `idLogement` int(11) DEFAULT NULL,
   `idPiece` int(11) DEFAULT NULL,
   `idEquipement` int(11) DEFAULT NULL,
   `idEtatLieux` int(11) DEFAULT NULL,
-  `idEtatEquipement` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+  `idEtatEquipement` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idLogement` (`idLogement`),
+  KEY `idPiece` (`idPiece`),
+  KEY `idEquipement` (`idEquipement`),
+  KEY `idEtatLieux` (`idEtatLieux`),
+  KEY `idEtatEquipement` (`idEtatEquipement`)
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Déchargement des données de la table `photo`
@@ -674,7 +722,33 @@ INSERT INTO `photo` (`id`, `lien`, `idLogement`, `idPiece`, `idEquipement`, `idE
 (2, 'bde8779-78fdb7da89-adc1214db47-dacebf78.jpg', 2, NULL, NULL, NULL, NULL),
 (3, 'ebcd4d3c-6a00-47d2-8165-6d9e192082af.jpg', 3, NULL, NULL, NULL, NULL),
 (4, 'ebda4-affe587-5754-afbbc5-fed485a4dc.jpg', 4, NULL, NULL, NULL, NULL),
-(5, 'ebebc456d3c-8add00-47d2-8765-67875fedbf.jpg', 5, NULL, NULL, NULL, NULL);
+(5, 'ebebc456d3c-8add00-47d2-8765-67875fedbf.jpg', 5, NULL, NULL, NULL, NULL),
+(10, '2fbe5884b0c2c66c30148c292b43955327a92c6975a01999f9f1c32c9accddefcab91cf2e0c37a1892737e7484c842c2152a.jpg', NULL, NULL, NULL, 1, NULL),
+(11, '0dcb5ae1a17ece795755753cb14d414056fb6d07463e7ef26670809acd997380129e11a9ace6260347377bd159f1836dddcb.jpg', NULL, NULL, NULL, 1, NULL),
+(12, 'f98307207ea7b2dc1bb678b7b55ed50b1999ee93aee81c19f06e44d25d5016e57d7ccce43fdad46f8ffec6b31bbbeec68806.jpg', NULL, NULL, NULL, 1, NULL),
+(13, '08ccb7178fa3e6caa8d87a4e39b8d867796bc5cec28bffd41b11b38f94dfb0962a6923db0443cf7a64a4c3af4e92b826e49a.jpg', NULL, NULL, NULL, 5, NULL),
+(14, 'test01laPhotoExistePasReelement.jpg', NULL, 1, NULL, NULL, NULL),
+(15, 'test02laPhotoExistePasReelement.jpg', NULL, 1, NULL, NULL, NULL),
+(20, 'test03laPhotoExistePasReelement.jpg', NULL, NULL, 1, 1, NULL),
+(21, 'test04laPhotoExistePasReelement.jpg', NULL, NULL, 6, 1, NULL),
+(22, 'test05laPhotoExistePasReelement.jpg', NULL, NULL, 7, 1, NULL),
+(23, 'test06laPhotoExistePasReelement.jpg', NULL, NULL, 2, 2, NULL),
+(24, 'test07laPhotoExistePasReelement.jpg', NULL, NULL, 8, 2, NULL),
+(25, 'test08laPhotoExistePasReelement.jpg', NULL, NULL, 3, 3, NULL),
+(26, 'test09laPhotoExistePasReelement.jpg', NULL, NULL, 9, 3, NULL),
+(27, 'test10laPhotoExistePasReelement.jpg', NULL, NULL, 4, 4, NULL),
+(28, 'test11laPhotoExistePasReelement.jpg', NULL, NULL, 10, 4, NULL),
+(29, 'test12laPhotoExistePasReelement.jpg', NULL, NULL, 11, 4, NULL),
+(30, 'test13laPhotoExistePasReelement.jpg', NULL, NULL, 1, 5, NULL),
+(31, 'test14laPhotoExistePasReelement.jpg', NULL, NULL, 6, 5, NULL),
+(32, 'test15laPhotoExistePasReelement.jpg', NULL, NULL, 7, 5, NULL),
+(33, 'test16laPhotoExistePasReelement.jpg', NULL, NULL, 2, 6, NULL),
+(34, 'test17laPhotoExistePasReelement.jpg', NULL, NULL, 8, 6, NULL),
+(35, 'test18laPhotoExistePasReelement.jpg', NULL, NULL, 3, 7, NULL),
+(36, 'test19laPhotoExistePasReelement.jpg', NULL, NULL, 9, 7, NULL),
+(37, 'test20laPhotoExistePasReelement.jpg', NULL, NULL, 4, 8, NULL),
+(38, 'test21laPhotoExistePasReelement.jpg', NULL, NULL, 10, 8, NULL),
+(39, 'test22laPhotoExistePasReelement.jpg', NULL, NULL, 11, 8, NULL);
 
 -- --------------------------------------------------------
 
@@ -682,12 +756,15 @@ INSERT INTO `photo` (`id`, `lien`, `idLogement`, `idPiece`, `idEquipement`, `idE
 -- Structure de la table `piece`
 --
 
-CREATE TABLE `piece` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `piece`;
+CREATE TABLE IF NOT EXISTS `piece` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `surface` int(11) NOT NULL,
   `type` varchar(255) NOT NULL,
-  `idLogement` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+  `idLogement` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `Piece_Logement_FK` (`idLogement`)
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Déchargement des données de la table `piece`
@@ -728,13 +805,17 @@ INSERT INTO `piece` (`id`, `surface`, `type`, `idLogement`) VALUES
 -- Structure de la table `reservation`
 --
 
-CREATE TABLE `reservation` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `reservation`;
+CREATE TABLE IF NOT EXISTS `reservation` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `dateDebut` date NOT NULL,
   `dateFin` date NOT NULL,
   `idDisponibilite` int(11) NOT NULL,
-  `idClient` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+  `idClient` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idLogement` (`idDisponibilite`),
+  KEY `idClient` (`idClient`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Déchargement des données de la table `reservation`
@@ -755,14 +836,16 @@ INSERT INTO `reservation` (`id`, `dateDebut`, `dateFin`, `idDisponibilite`, `idC
 -- Structure de la table `utilisateur`
 --
 
-CREATE TABLE `utilisateur` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `utilisateur`;
+CREATE TABLE IF NOT EXISTS `utilisateur` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `mdp` varchar(300) NOT NULL,
   `nom` varchar(150) NOT NULL,
   `prenom` varchar(150) NOT NULL,
   `mail` varchar(150) NOT NULL,
-  `proprietaire` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+  `proprietaire` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Déchargement des données de la table `utilisateur`
@@ -771,137 +854,6 @@ CREATE TABLE `utilisateur` (
 INSERT INTO `utilisateur` (`id`, `mdp`, `nom`, `prenom`, `mail`, `proprietaire`) VALUES
 (6, '$2y$10$aUtOC0HDRIFDZX2wD.QgBuQK0dy6BZYr1bNaeNNvZ6zjh8lLllNEO', 'jacque', 'luc', 'a@a.a', 0),
 (7, '$2y$10$syNQ9RVuVksCQ1kGUvrUP.zWMvbbFJ8a734TYW8Gi7TJT9dBuxLpK', 'b', 'b', 'b@b.b', 1);
-
---
--- Index pour les tables déchargées
---
-
---
--- Index pour la table `disponibilite`
---
-ALTER TABLE `disponibilite`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `idLogement` (`idLogement`);
-
---
--- Index pour la table `equipement`
---
-ALTER TABLE `equipement`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `Equipement_Piece_FK` (`idPiece`);
-
---
--- Index pour la table `etatEquipement`
---
-ALTER TABLE `etatEquipement`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `idEtatLieux` (`idEtatLieux`),
-  ADD KEY `idEquipement` (`idEquipement`);
-
---
--- Index pour la table `etatLieux`
---
-ALTER TABLE `etatLieux`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `idReservation` (`idReservation`),
-  ADD KEY `idPiece` (`idPiece`);
-
---
--- Index pour la table `logement`
---
-ALTER TABLE `logement`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `Logement_Utilisateur_FK` (`idProprietaire`);
-
---
--- Index pour la table `photo`
---
-ALTER TABLE `photo`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `idLogement` (`idLogement`),
-  ADD KEY `idPiece` (`idPiece`),
-  ADD KEY `idEquipement` (`idEquipement`),
-  ADD KEY `idEtatLieux` (`idEtatLieux`),
-  ADD KEY `idEtatEquipement` (`idEtatEquipement`);
-
---
--- Index pour la table `piece`
---
-ALTER TABLE `piece`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `Piece_Logement_FK` (`idLogement`);
-
---
--- Index pour la table `reservation`
---
-ALTER TABLE `reservation`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `idLogement` (`idDisponibilite`),
-  ADD KEY `idClient` (`idClient`);
-
---
--- Index pour la table `utilisateur`
---
-ALTER TABLE `utilisateur`
-  ADD PRIMARY KEY (`id`);
-
---
--- AUTO_INCREMENT pour les tables déchargées
---
-
---
--- AUTO_INCREMENT pour la table `disponibilite`
---
-ALTER TABLE `disponibilite`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
-
---
--- AUTO_INCREMENT pour la table `equipement`
---
-ALTER TABLE `equipement`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
-
---
--- AUTO_INCREMENT pour la table `etatEquipement`
---
-ALTER TABLE `etatEquipement`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
-
---
--- AUTO_INCREMENT pour la table `etatLieux`
---
-ALTER TABLE `etatLieux`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT pour la table `logement`
---
-ALTER TABLE `logement`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-
---
--- AUTO_INCREMENT pour la table `photo`
---
-ALTER TABLE `photo`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
-
---
--- AUTO_INCREMENT pour la table `piece`
---
-ALTER TABLE `piece`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
-
---
--- AUTO_INCREMENT pour la table `reservation`
---
-ALTER TABLE `reservation`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
-
---
--- AUTO_INCREMENT pour la table `utilisateur`
---
-ALTER TABLE `utilisateur`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Contraintes pour les tables déchargées
@@ -920,11 +872,17 @@ ALTER TABLE `equipement`
   ADD CONSTRAINT `equipement_ibfk_1` FOREIGN KEY (`idPiece`) REFERENCES `piece` (`id`);
 
 --
--- Contraintes pour la table `etatEquipement`
+-- Contraintes pour la table `etatequipement`
 --
-ALTER TABLE `etatEquipement`
-  ADD CONSTRAINT `etatEquipement_ibfk_1` FOREIGN KEY (`idEtatLieux`) REFERENCES `etatLieux` (`id`),
+ALTER TABLE `etatequipement`
+  ADD CONSTRAINT `etatEquipement_ibfk_1` FOREIGN KEY (`idEtatLieux`) REFERENCES `etatlieux` (`id`),
   ADD CONSTRAINT `etatEquipement_ibfk_2` FOREIGN KEY (`idEquipement`) REFERENCES `equipement` (`id`);
+
+--
+-- Contraintes pour la table `etatlieux`
+--
+ALTER TABLE `etatlieux`
+  ADD CONSTRAINT `etatlieux_ibfk_1` FOREIGN KEY (`idPiece`) REFERENCES `piece` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

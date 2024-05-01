@@ -23,70 +23,118 @@ if ($connexion["succes"]) {
                     $lesPieces = array();
                     foreach ($lesIdDesPieces as $Id) {
                         //Etape 2 : Recupérer type, Ancienne note et ancien commentaire
-                        //Faire si la piece n'a pas d'ancien etat des lieux
-                        $sql = "SELECT piece.id AS id, piece.type AS type, etatLieux.note AS ancienneNote, etatLieux.commentaire AS ancienCommentaire FROM etatLieux
-                        INNER JOIN piece ON piece.id = etatLieux.idPiece
-                        WHERE etatlieux.idPiece = :unId
-                        ORDER BY etatlieux.dateEtatLieux DESC
-                        LIMIT 1;";
+                        $sql = "SELECT COUNT(*) AS nbAncienEtatLieux FROM etatlieux WHERE idPiece = :unId";
                         $req = $pdo->prepare($sql);
                         $req->bindParam(":unId", $Id["id"], \PDO::PARAM_INT);
                         $res = $req->execute();
                         if ($res) {
-                            $lesInfosPiece = $req->fetch(\PDO::FETCH_ASSOC);
-                            $laPiece["infos"] = $lesInfosPiece;
-                        } else {
-                            creerJson(500, "Internal Server Error");
-                            break;
-                        }
-
-                        //Etape 3 : Recupérer equipement
-                        $sql = "SELECT DISTINCT id FROM equipement WHERE idPiece = :unId;";
-                        $req = $pdo->prepare($sql);
-                        $req->bindParam(":unId", $Id["id"], \PDO::PARAM_INT);
-                        $res = $req->execute();
-                        if ($res) {
-                            $lesIdDesEquipement = $req->fetchAll(\PDO::FETCH_ASSOC);
-                        } else {
-                            creerJson(500, "Internal Server Error");
-                            break;
-                        }
-                        $lesEquipements = array();
-                        foreach ($lesIdDesEquipement as $Equipement) {
-                            $sql = "SELECT equipement.id AS id, equipement.libelle AS libelle, etatEquipement.note AS ancienneNote, etatEquipement.commentaire AS ancienCommentaire FROM etatEquipement
-                            INNER JOIN equipement ON equipement.id = etatEquipement.idEquipement
-                            INNER JOIN etatLieux ON etatLieux.id = etatEquipement.idEtatLieux
-                            WHERE etatEquipement.idEquipement = :unId
-                            ORDER BY etatlieux.dateEtatLieux DESC
-                            LIMIT 1;";
-                            $req = $pdo->prepare($sql);
-                            $req->bindParam(":unId", $Equipement["id"], \PDO::PARAM_INT);
-                            $res = $req->execute();
-                            if ($res) {
-                                $unEquipement = $req->fetch(\PDO::FETCH_ASSOC);
-
-                                //Etape 3.5 Recupérer les photos des equipements
-                                $sql = "SELECT lien FROM photo WHERE idEquipement = :unId AND idEtatLieux IS NOT NULL LIMIT 50";
+                            $nbEtatLieux = $req->fetch(\PDO::FETCH_ASSOC);
+                            if ($nbEtatLieux["nbAncienEtatLieux"] > 0) {
+                                //La pièce a DEJA eu d'anciens etats des lieux
+                                $sql = "SELECT piece.id AS id, piece.type AS type, etatLieux.note AS ancienneNote, etatLieux.commentaire AS ancienCommentaire FROM etatLieux 
+                                        INNER JOIN piece ON piece.id = etatLieux.idPiece
+                                        WHERE etatlieux.idPiece = :unId
+                                        ORDER BY etatlieux.dateEtatLieux DESC
+                                        LIMIT 1;";
                                 $req = $pdo->prepare($sql);
-                                $req->bindParam(":unId", $Equipement["id"], \PDO::PARAM_INT);
+                                $req->bindParam(":unId", $Id["id"], \PDO::PARAM_INT);
                                 $res = $req->execute();
                                 if ($res) {
-                                    $lesPhotosEquipements = $req->fetchAll(\PDO::FETCH_ASSOC);
-                                    //var_dump($lesPhotosEquipements);
-                                    $lesLiens = array();
-                                    if ($lesPhotosEquipements != array()) {
-
-                                        foreach ($lesPhotosEquipements as $laPhoto) {
-                                            array_push($lesLiens, $laPhoto["lien"]);
-                                        }
-                                    }
-                                    $unEquipement["listePhoto"] = $lesLiens;
+                                    $lesInfosPiece = $req->fetch(\PDO::FETCH_ASSOC);
+                                    $laPiece["infos"] = $lesInfosPiece;
                                 } else {
                                     creerJson(500, "Internal Server Error");
                                     break;
                                 }
+                            } else {
+                                //La piece n'a JAMAIS eu d'anciens etats des lieux
+                                $laPiece["infos"] = Null;
+                            };
+                        } else {
+                            creerJson(500, "Internal Server Error");
+                            break;
+                        }
 
-                                array_push($lesEquipements, $unEquipement);
+                        //Etape 3 : Recupérer les Infos equipements
+
+                        //Etape 3.1 : Recupérer les ID des Equipements
+                        $sql = "SELECT COUNT(*) AS nbEquipement FROM equipement WHERE idPiece = :unId;";
+                        $req = $pdo->prepare($sql);
+                        $req->bindParam(":unId", $Id["id"], \PDO::PARAM_INT);
+                        $res = $req->execute();
+                        if ($res) {
+                            $nbEquipement = $req->fetch(\PDO::FETCH_ASSOC);
+                            if ($nbEquipement["nbEquipement"] > 0) {
+                                //La piece POSSEDE au moins 1 equipement
+                                $sql = "SELECT DISTINCT id FROM equipement WHERE idPiece = :unId;";
+                                $req = $pdo->prepare($sql);
+                                $req->bindParam(":unId", $Id["id"], \PDO::PARAM_INT);
+                                $res = $req->execute();
+                                if ($res) {
+                                    $lesIdDesEquipement = $req->fetchAll(\PDO::FETCH_ASSOC);
+                                } else {
+                                    creerJson(500, "Internal Server Error");
+                                    break;
+                                }
+                            } else {
+                                //La piece NE possede PAS d'equipement
+                                $lesIdDesEquipement = array();
+                            }
+                        } else {
+                            creerJson(500, "Internal Server Error");
+                            break;
+                        }
+
+                        //Etape 3.2 : Recupérer les Infos Equipement (ID, Libelle, AncienneNote, AncienCcommentaire)
+                        $lesEquipements = array();
+                        foreach ($lesIdDesEquipement as $Equipement) {
+                            $sql = "SELECT COUNT(*) AS nbAncienEtatEquipement FROM etatequipement WHERE idEquipement = :unId";
+                            $req = $pdo->prepare($sql);
+                            $req->bindParam(":unId", $Equipement["id"], \PDO::PARAM_INT);
+                            $res = $req->execute();
+                            if ($res) {
+                                $nbEtatEquipement = $req->fetch(\PDO::FETCH_ASSOC);
+                                if ($nbEtatEquipement["nbAncienEtatEquipement"] > 0) {
+                                    //L'equipement a DEJA eu d'anciens etats d'equipement
+
+                                    $sql = "SELECT equipement.id AS id, equipement.libelle AS libelle, etatEquipement.note AS ancienneNote, etatEquipement.commentaire AS ancienCommentaire FROM etatEquipement
+                                            INNER JOIN equipement ON equipement.id = etatEquipement.idEquipement
+                                            INNER JOIN etatLieux ON etatLieux.id = etatEquipement.idEtatLieux
+                                            WHERE etatEquipement.idEquipement = :unId
+                                            ORDER BY etatlieux.dateEtatLieux DESC
+                                            LIMIT 1;";
+                                    $req = $pdo->prepare($sql);
+                                    $req->bindParam(":unId", $Equipement["id"], \PDO::PARAM_INT);
+                                    $res = $req->execute();
+                                    if ($res) {
+                                        $unEquipement = $req->fetch(\PDO::FETCH_ASSOC);
+
+                                        //Etape 3.3 Recupérer les photos des equipements
+                                        $sql = "SELECT lien FROM photo WHERE idEquipement = :unId AND idEtatLieux IS NOT NULL LIMIT 50";
+                                        $req = $pdo->prepare($sql);
+                                        $req->bindParam(":unId", $Equipement["id"], \PDO::PARAM_INT);
+                                        $res = $req->execute();
+                                        if ($res) {
+                                            $lesPhotosEquipements = $req->fetchAll(\PDO::FETCH_ASSOC);
+                                            $lesLiens = array();
+                                            if ($lesPhotosEquipements != array()) {
+
+                                                foreach ($lesPhotosEquipements as $laPhoto) {
+                                                    array_push($lesLiens, $laPhoto["lien"]);
+                                                }
+                                            }
+                                            $unEquipement["listePhoto"] = $lesLiens;
+                                        } else {
+                                            creerJson(500, "Internal Server Error");
+                                            break;
+                                        }
+
+                                        array_push($lesEquipements, $unEquipement);
+                                    } else {
+                                        creerJson(500, "Internal Server Error");
+                                        break;
+                                    }
+                                }
                             } else {
                                 creerJson(500, "Internal Server Error");
                                 break;
