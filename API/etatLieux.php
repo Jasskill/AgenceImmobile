@@ -71,7 +71,7 @@ if ($connexion["succes"]) {
             break;
         case "POST":
             $json = json_decode(file_get_contents('php://input'));
-            if (isset($json->idReservation) && isset($json->idPiece) && isset($json->date) && isset($json->note) && isset($json->commentaire)) {
+            if (isset($json->idReservation) && isset($json->idPiece) && isset($json->note) && isset($json->commentaire)) {
                 //Determiner si les prochains etats des lieux à réaliser sont ceux de DEBUT ou de FIN
                 // 1 = FIN / 0 = DEBUT
                 $sql = "SELECT COUNT(*) AS nbReservationCorrespondante FROM reservation WHERE id = :unId AND dateFin < NOW()";
@@ -82,15 +82,14 @@ if ($connexion["succes"]) {
                     $nbReservation = $req->fetch(\PDO::FETCH_ASSOC);
                     echo $nbReservation["nbReservationCorrespondante"];
                     if ($nbReservation["nbReservationCorrespondante"] == 0) {
-                        $sql = "INSERT INTO etatLieux (idReservation, idPiece, dateEtatLieux, note, commentaire, DF) VALUES (:unIdReservation, :unIdPiece, :uneDateEtatLieux, :uneNote, :unCommentaire, 'D')";
+                        $sql = "INSERT INTO etatLieux (idReservation, idPiece, dateEtatLieux, note, commentaire, DF) VALUES (:unIdReservation, :unIdPiece, NOW(), :uneNote, :unCommentaire, 'D')";
                     } else {
-                        $sql = "INSERT INTO etatLieux (idReservation, idPiece, dateEtatLieux, note, commentaire, DF) VALUES (:unIdReservation, :unIdPiece, :uneDateEtatLieux, :uneNote, :unCommentaire, 'F')";
+                        $sql = "INSERT INTO etatLieux (idReservation, idPiece, dateEtatLieux, note, commentaire, DF) VALUES (:unIdReservation, :unIdPiece, NOW(), :uneNote, :unCommentaire, 'F')";
                     }
                 }
                 $req = $pdo->prepare($sql);
                 $req->bindParam(":unIdReservation", $json->idReservation, \PDO::PARAM_INT);
                 $req->bindParam(":unIdPiece", $json->idPiece, \PDO::PARAM_INT);
-                $req->bindParam(":uneDateEtatLieux", $json->date, \PDO::PARAM_STR);
                 $req->bindParam(":uneNote", $json->note, \PDO::PARAM_STR);
                 $req->bindParam(":unCommentaire", $json->commentaire, \PDO::PARAM_STR);
                 $res = $req->execute();

@@ -5,7 +5,7 @@ $connexion = creerConnexion();
 if ($connexion["succes"]) {
     $pdo = $connexion["pdo"];
     switch ($_SERVER["REQUEST_METHOD"]) {
-        case "GET":
+        case "POST":
             $json = json_decode(file_get_contents('php://input'));
             if (isset($json->mail) && isset($json->hash)) {
                 $sql = "SELECT count(*) AS nb FROM utilisateur WHERE mail = :leMail";
@@ -29,18 +29,23 @@ if ($connexion["succes"]) {
                             $utilisateur = $req->fetch(\PDO::FETCH_ASSOC);
 
                             creerJson(200, $utilisateur);
+                            break;
                         } else {
-                            creerJson(400, "Bad Request");
+                            creerJson(401, "Unauthorized : Email ou mot de passe incorrect");
+                            break;
                         }
                     } else {
                         //error
-                        creerJson(400, "Bad request");
+                        creerJson(500, "Internal Server Error");
+                        break;
                     }
                 } else {
-                    creerJson(400, "Bad request");
+                    creerJson(404, "Not found : mail inconnu");
+                    break;
                 }
             } else {
-                creerJson(400, "Bad request");
+                creerJson(400, "Bad request : Les éléments nécessaires ne sont pas fournies");
+                break;
             }
             break;
         default:
