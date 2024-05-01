@@ -22,7 +22,6 @@ export default function Piece(props) {
       </Text>
       <Button
         onPress={() => {
-          console.log('MIAOU ' + props.infos.id)
           navigation.navigate('PieceDetailsScreen', { props: props })
         }}
         title="Noter"
