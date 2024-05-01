@@ -144,6 +144,17 @@ if ($connexion["succes"]) {
                                         creerJson(500, "Internal Server Error");
                                         break;
                                     }
+                                }else{
+                                    //L'equipement n'a JAMAIS eu d'anciens etats d'equipement
+
+                                    $sql = "SELECT equipement.id AS id, equipement.libelle AS libelle FROM equipement WHERE id = :unId";
+                                    $req = $pdo->prepare($sql);
+                                    $req->bindParam(":unId", $Equipement["id"], \PDO::PARAM_INT);
+                                    $res = $req->execute();
+                                    if ($res) {
+                                        $unEquipement = $req->fetch(\PDO::FETCH_ASSOC);
+                                    }
+                                    array_push($lesEquipements, $unEquipement);
                                 }
                             } else {
                                 creerJson(500, "Internal Server Error");
