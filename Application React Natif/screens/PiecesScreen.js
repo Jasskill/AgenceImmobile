@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, View, Text } from 'react-native'
+import { Button, View, Text, ScrollView } from 'react-native'
 import { useRoute } from '@react-navigation/native'
 import Reservation from '../components/Reservation'
 import { useState, useEffect } from 'react'
@@ -39,7 +39,7 @@ export default function PiecesScreen() {
     )
   } else {
     return (
-      <View>
+      <ScrollView>
         <Text>PiecesScreen</Text>
         { 
       
@@ -51,7 +51,7 @@ export default function PiecesScreen() {
             listePhoto={unePiece.listePhoto}
           />
         )) }
-      </View>
+      </ScrollView>
     )
   }
 }
