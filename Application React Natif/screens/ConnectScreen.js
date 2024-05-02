@@ -3,13 +3,11 @@ import { Button, View, Text, TextInput } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import {SafeAreaView, StyleSheet} from 'react-native';
 import { useState, useEffect } from 'react'
-import Authentification from './AuthentificationScreen';
 
 export default function ConnectScreen() {
   const navigation = useNavigation()
   const [login, setLogin] = useState('')
   const [mdp, setMdp] = useState('')
-  const [authentificationData, setAuthentificationData] = useState({})
   
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -18,7 +16,6 @@ export default function ConnectScreen() {
       <TextInput style={styles.input} placeholder='Mot de passe' onChangeText={setMdp} autoCapitalize='none' secureTextEntry={true}></TextInput>
       <Button
         onPress={() => {
-          console.log('SKIPPED CONNECTION')
           navigation.navigate('AuthentificationScreen', { login: login, mdp: mdp })
         }}
         title="Se Connecter"
