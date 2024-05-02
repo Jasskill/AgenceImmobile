@@ -4,6 +4,7 @@ import ConnectScreen from './screens/ConnectScreen'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import PiecesScreen from './screens/PiecesScreen'
 import PieceDetailsScreen from './screens/PieceDetailsScreen'
+import AuthentificationScreen from './screens/AuthentificationScreen'
 const Stack = createNativeStackNavigator()
 export default function App() {
   return (
@@ -12,6 +13,14 @@ export default function App() {
         <Stack.Screen
           name="Homepage"
           component={ConnectScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+        <Stack.Screen
+          name="AuthentificationScreen"
+          component={AuthentificationScreen}
           options={{
             headerShown: false,
           }}

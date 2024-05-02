@@ -3,22 +3,23 @@ import { Button, View, Text, TextInput } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import {SafeAreaView, StyleSheet} from 'react-native';
 import { useState, useEffect } from 'react'
+import Authentification from './AuthentificationScreen';
 
 export default function ConnectScreen() {
   const navigation = useNavigation()
-  const [login, setLogin] = useState()
-  const [mdp, setMdp] = useState()
-  const link = 'http://192.168.56.1/api/authentification.php'
+  const [login, setLogin] = useState('')
+  const [mdp, setMdp] = useState('')
+  const [authentificationData, setAuthentificationData] = useState({})
   
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text style={{fontSize:50}}>Connexion</Text>
-      <TextInput style={styles.input} placeholder='Mail' onChangeText={setLogin}></TextInput>
-      <TextInput style={styles.input} placeholder='Mot de passe' onChangeText={setMdp}></TextInput>
+      <TextInput style={styles.input} placeholder='Mail' onChangeText={setLogin} autoCapitalize='none'></TextInput>
+      <TextInput style={styles.input} placeholder='Mot de passe' onChangeText={setMdp} autoCapitalize='none' secureTextEntry={true}></TextInput>
       <Button
         onPress={() => {
           console.log('SKIPPED CONNECTION')
-          navigation.navigate('AccueilScreen', { id: 6 })
+          navigation.navigate('AuthentificationScreen', { login: login, mdp: mdp })
         }}
         title="Se Connecter"
       />
