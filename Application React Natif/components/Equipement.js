@@ -6,11 +6,11 @@ import Photo from './Photo';
 export default function Equipement(props) {
     const navigation = useNavigation()
     return (<View><Text>{props.infos.libelle}</Text>
-    {props.infos.listePhoto.map((unePhoto, index) => (
+    {/* {props.infos.listePhoto.map((unePhoto, index) => (
         <Photo
           key={index}
           lien={unePhoto}
         />
-      )) }
+      )) } */}
     </View>)
 }

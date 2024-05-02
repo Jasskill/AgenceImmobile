@@ -15,7 +15,7 @@ export default function Reservation(props) {
       <Button
         onPress={() => {
           navigation.navigate('PiecesScreen', {
-            idReservation: props.idReservation,
+            idReservation: props.idReservation, idClient: props.client
           })
         }}
         title="Voir"
