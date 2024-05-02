@@ -18,11 +18,13 @@ export default function PieceDetailsScreen() {
   const navigation = useNavigation()
   const route = useRoute()
   const props = route.params?.props
+  const idReservation = route.params?.idReservation
   const lesImages = []
   const [count, setCount]= useState(0)
   const [commentaire, onChangeCommentaire] = useState('');
   const [selectedValue, setSelectedValue] = useState(5);
-  console.log(props)
+  console.log("le props")
+  console.log(props.equipements)
   const styles = StyleSheet.create({
     input: {
       height: 40,
@@ -52,7 +54,7 @@ export default function PieceDetailsScreen() {
       setCount( lesImages.length)
     }
   };
-
+  
   return (
     <ScrollView >
       <Text style={{alignItems: 'center' }}>PieceDetailsScreen pour la pièce : {props.infos.id}</Text>
@@ -76,10 +78,18 @@ export default function PieceDetailsScreen() {
 
       <Button
         onPress={() => {
-          if(commentaire!='' && count!=0){
+          if(commentaire!='' && count!=0 && selectedValue!=null){
             //on balance la sauce
-
-            navigation.navigate('AccueilScreen', { id: 6 })
+            fetch('http://192.168.1.30/api/etatLieux.php', {
+              method: 'POST',
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({idReservation: idReservation, idPiece: props.infos.id, note: selectedValue, commentaire: commentaire})
+            })
+            console.log(JSON.stringify({idReservation: idReservation, idPiece: props.infos.id, note: selectedValue, commentaire: commentaire}))
+            navigation.navigate('AccueilScreen')
           } else {
             //toast
             Alert.alert('🛑Attention🛑', 'Merci de remplir correctement chaque champ et de prendre des photos avant de valider !')
@@ -89,13 +99,13 @@ export default function PieceDetailsScreen() {
         title="Valider"
       />
       <Text>Les équipements de la pièce :</Text>
-       { 
+       { typeof props.equipements !=  'undefined' ?
       props.equipements.map((unEquipement, index) => (
         <Equipement
           key={index}
           infos={unEquipement}
         />
-      )) }
+      )) : null}
     </ScrollView>
   )
 

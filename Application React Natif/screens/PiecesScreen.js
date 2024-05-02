@@ -7,6 +7,7 @@ import Piece from '../components/Piece'
 export default function PiecesScreen() {
   const route = useRoute()
   const id = route.params?.idReservation
+  const idClient = route.params?.idClient
   const link = 'http://192.168.1.30/api/piece.php?idReservation='
   const [lesPieces, setLesPieces] = useState({})
   const [isLoading, setLoading] = useState(true)
@@ -49,7 +50,7 @@ export default function PiecesScreen() {
             infos={unePiece.infos}
             equipements={unePiece.equipements}
             listePhoto={unePiece.listePhoto}
-          />
+            idReservation={id}          />
         )) }
       </ScrollView>
     )

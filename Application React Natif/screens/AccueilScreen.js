@@ -54,6 +54,7 @@ if(reservationData.hasOwnProperty("message")){
           datedeb={uneReservation.dateDebut}
           datefin={uneReservation.dateFin}
           logement={uneReservation.Logement}
+          client={id}
         />
       ))}
     </View>
