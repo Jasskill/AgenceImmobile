@@ -17,7 +17,6 @@ if ($connexion["succes"]) {
                 $res = $req->execute();
                 if ($res) {
                     $nbReservation = $req->fetch(\PDO::FETCH_ASSOC);
-                    echo $nbReservation["nbReservationCorrespondante"];
                     if ($nbReservation["nbReservationCorrespondante"] == 0) {
                         //DEBUT
                         $sql = "SELECT COUNT(*) AS nbEtatLieux FROM etatlieux WHERE idReservation = :unId1 AND idPiece = :unId2 AND DF = 'D'";
@@ -80,7 +79,6 @@ if ($connexion["succes"]) {
                 $res = $req->execute();
                 if ($res) {
                     $nbReservation = $req->fetch(\PDO::FETCH_ASSOC);
-                    echo $nbReservation["nbReservationCorrespondante"];
                     if ($nbReservation["nbReservationCorrespondante"] == 0) {
                         $sql = "INSERT INTO etatLieux (idReservation, idPiece, dateEtatLieux, note, commentaire, DF) VALUES (:unIdReservation, :unIdPiece, NOW(), :uneNote, :unCommentaire, 'D')";
                     } else {
