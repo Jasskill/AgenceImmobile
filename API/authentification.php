@@ -7,7 +7,9 @@ if ($connexion["succes"]) {
     switch ($_SERVER["REQUEST_METHOD"]) {
         case "POST":
             $json = json_decode(file_get_contents('php://input'));
-            if (isset($json->mail) && isset($json->hash)) {
+            if (isset($json->mail) && isset($json->mdp)) {
+                $mdp = base64_decode($json->mdp);
+
                 $sql = "SELECT count(*) AS nb FROM utilisateur WHERE mail = :leMail";
                 $req = $pdo->prepare($sql);
                 $req->bindParam(":leMail", $json->mail, \PDO::PARAM_STR);
@@ -21,7 +23,7 @@ if ($connexion["succes"]) {
                     if ($res) {
                         //success
                         $utilisateur = $req->fetch(\PDO::FETCH_ASSOC);
-                        if ($utilisateur['mdp'] == $json->hash) {
+                        if (password_verify($mdp, $utilisateur['mdp'])) {
                             $sql = "SELECT id, nom, prenom FROM utilisateur WHERE mail = :leMail";
                             $req = $pdo->prepare($sql);
                             $req->bindParam(":leMail", $json->mail, \PDO::PARAM_STR);

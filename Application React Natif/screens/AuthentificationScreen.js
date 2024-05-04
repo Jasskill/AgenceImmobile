@@ -23,7 +23,7 @@ export default function AuthentificationScreen() {
         Accept: 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ mail: login, hash: mdp })
+      body: JSON.stringify({ mail: login, mdp: mdp })
     })
       .then(function (response) {
         console.log('traitement réponse')
