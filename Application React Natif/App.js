@@ -30,7 +30,7 @@ export default function App() {
           name="AccueilScreen"
           component={AccueilScreen}
           options={{
-            headerShown: true,
+            headerShown: false,
           }}
         />
 
