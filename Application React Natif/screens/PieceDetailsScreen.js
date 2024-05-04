@@ -103,7 +103,6 @@ export default function PieceDetailsScreen() {
                 console.log("-------------------------------------------------------")
                 console.log(JSON.stringify({idReservation: idReservation, idPiece: props.infos.id, note: selectedValue, commentaire: commentaire}))
               console.log(IDEtatLieux)
-              console.log("-----------------UWUWUWUWUWU--------------------------------------")
               //on envoie les photos
               ended = lesImages.length
               
@@ -127,8 +126,6 @@ export default function PieceDetailsScreen() {
                       },
                       function (error) {
                         console.log(error)
-                        console.log("grosse dépression")
-                        Alert.alert('Oopsie', "Une erreurdeputain :/")
                       }
                     )
                     ended = ended-1
