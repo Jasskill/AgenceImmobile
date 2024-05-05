@@ -102,7 +102,7 @@ export default function PieceDetailsScreen() {
                 console.log(Data)
                 console.log("-------------------------------------------------------")
                 console.log(JSON.stringify({idReservation: idReservation, idPiece: props.infos.id, note: selectedValue, commentaire: commentaire}))
-              console.log(IDEtatLieux)
+              console.log("IDETATLieux : " + IDEtatLieux)
               //on envoie les photos
               ended = lesImages.length
               
@@ -113,7 +113,7 @@ export default function PieceDetailsScreen() {
                 body.append('photo', {uri: uneimg,name: IDEtatLieux+'.'+props.infos.id+'.jpeg',type: 'image/jpeg'});
                 // body.append(JSON.stringify({idEtatLieux: IDEtatLieux, idPiece: props.infos.id, extension: ".jpeg"}))
                 console.log("_-_-_-_-_-_-_-_-_-_-_-_--_")
-                fetch("http://192.168.1.30/api/photo.php",{ method: 'POST',headers:{  
+                fetch("http://192.168.56.1/api/photo.php",{ method: 'POST',headers:{  
                     "Content-Type": "multipart/form-data",
                     } , body :body} ).then(function (response) {
                       console.log('traitement réponse de lupload dimage')
