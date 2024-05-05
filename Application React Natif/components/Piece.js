@@ -13,7 +13,7 @@ export default function Piece(props) {
   //je ne sais pas si c'est le ddébut ou fin, c'est l'api qui gère
   //je grise 'il ne faut pas d'etat des lieux (déjà fait)
 
-  var link = 'http://192.168.56.1/api/etatLieux.php?idReservation='
+  var link = 'http://192.168.1.30/api/etatLieux.php?idReservation='
   const [verifData, setVerifData] = useState({})
   const [isLoading, setLoading] = useState(true)
 
