@@ -2,27 +2,27 @@
 
 ## Mise en place de l'environnement de test :
 
-1. Importer la base de données immobilier.sql et la nommer "immo":
-Users avec reservations :
+1. Importer la base de données immobilier.sql et la nommer "immo": \
+Users avec reservations : 
 mail : john.doe@example.com
-mdp : JohnDoe
+mdp : JohnDoe \
 
 mail : alice.smith@example.com
-mdp : AliceSmith
+mdp : AliceSmith \
 
 mail : bob.johnson@example.com
-mdp : BobJohnson
+mdp : BobJohnson \
 
 mail : emilie.dubois@example.com
-mdp : EmilieDubois
+mdp : EmilieDubois \
 
 1. Modification a apporter à l'application mobile React Native : 
 Changer l'IP dans les fichiers suivant :
--AuthentificationScreen.js
--Piece.js
--PieceDetailsScreen.js (ligne 85 & 114)
--PieceScreen.js
-
+1 .AuthentificationScreen.js
+1. Piece.js
+1. PieceDetailsScreen.js (ligne 85 & 114)
+1. PieceScreen.js
+\
 Si les photos ne sont pas enregistré, essayer de redémarrer l'ordinateur après avoir installer le projet.
 Promis des fois ça règle les soucis 🤠
 
