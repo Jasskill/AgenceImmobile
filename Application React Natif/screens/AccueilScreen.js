@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, View, Text } from 'react-native'
+import { Button, View, Text, ScrollView } from 'react-native'
 import { useRoute } from '@react-navigation/native'
 import Reservation from '../components/Reservation'
 
@@ -45,7 +45,7 @@ if(reservationData.hasOwnProperty("message")){
   return (<View><Text>Une erreur est survenue :{reservationData.message}</Text></View>)
 } else {
   return (
-    <View>
+    <ScrollView>
       <Text>AccueilScreen</Text>
       {reservationData.map((uneReservation, index) => (
         <Reservation
@@ -57,7 +57,7 @@ if(reservationData.hasOwnProperty("message")){
           client={id}
         />
       ))}
-    </View>
+    </ScrollView>
   )
 }
 }
