@@ -18,10 +18,10 @@ mdp : EmilieDubois
 
 1. Modification a apporter à l'application mobile React Native : 
 Changer l'IP dans les fichiers suivant :
-1 .AuthentificationScreen.js
-1. Piece.js
-1. PieceDetailsScreen.js (ligne 85 & 114)
-1. PieceScreen.js
+- AuthentificationScreen.js
+- Piece.js
+- PieceDetailsScreen.js (ligne 85 & 114)
+- PieceScreen.js
   
 Si les photos ne sont pas enregistré, essayer de redémarrer l'ordinateur après avoir installer le projet.
 Promis des fois ça règle les soucis 🤠
