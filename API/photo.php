@@ -23,7 +23,7 @@ if ($connexion["succes"]) {
                 if ($res) {
                     //success
                     $objet = array("lien" => $lien);
-                    move_uploaded_file($_FILES["photo"]["tmp_name"], $lien);
+                    move_uploaded_file($_FILES["photo"]["tmp_name"], "./photos/".$lien);
                     creerJson(201, $objet);
                 } else {
                     //error

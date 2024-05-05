@@ -53,7 +53,6 @@ export default function PieceDetailsScreen() {
 
     if (!result.canceled) {
       lesImages.push(result.assets[0].uri)
-      console.log(lesImages.length , lesImages)
       setCount( lesImages.length)
     }
   };
@@ -83,7 +82,7 @@ export default function PieceDetailsScreen() {
         onPress={() => {
           if(commentaire!='' && count!=0 && selectedValue!=null){
             //on balance la sauce
-            fetch('http://192.168.56.1/api/etatLieux.php', {
+            fetch('http://192.168.1.30/api/etatLieux.php', {
               method: 'POST',
               headers: {
                 'Accept': 'application/json',
@@ -99,7 +98,6 @@ export default function PieceDetailsScreen() {
                 console.log('traitement données etat lieux')
                 setIDEtatLieux(Data.ID)
                 console.log(Data.ID)
-                console.log(Data)
                 console.log("-------------------------------------------------------")
                 console.log(JSON.stringify({idReservation: idReservation, idPiece: props.infos.id, note: selectedValue, commentaire: commentaire}))
               console.log(IDEtatLieux)

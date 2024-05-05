@@ -8,7 +8,7 @@ import { useState, useEffect } from 'react'
 export default function AccueilScreen() {
   const route = useRoute()
   const id = route.params?.id
-  const link = 'http://192.168.56.1/api/reservation.php?idClient='
+  const link = 'http://192.168.1.30/api/reservation.php?idClient='
   const [reservationData, setReservationData] = useState([])
   const [isLoading, setLoading] = useState(true)
 
