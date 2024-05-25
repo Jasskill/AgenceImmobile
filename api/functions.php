@@ -48,3 +48,20 @@ function genererUIDPhoto($pdo, $extension)
 
     return $lien;
 }
+
+function addLog($type, $message){
+    $app = "ImMobile";
+    try {
+        $pdo = new \PDO("mysql:host=localhost;dbname=logs;charset=utf8", "root", '');
+        $sql = "INSERT INTO `log`( `app`, `type`, `message`, `time`) VALUES ( :app , :type , :message , NOW())";
+        $req = $pdo->prepare($sql);
+        $req->bindParam(':app', $app, PDO::PARAM_STR);
+        $req->bindParam(':type', $type, PDO::PARAM_STR);
+        $req->bindParam(':message', $message, PDO::PARAM_STR);
+        $req->execute();
+    } catch (Exception $e) {
+        creerJson(500, "Une erreur est survenue : ".$e);
+        exit;
+    }
+    
+}
