@@ -25,9 +25,11 @@ if ($connexion["succes"]) {
                     $objet = array("lien" => $lien);
                     move_uploaded_file($_FILES["photo"]["tmp_name"], "./photos/".$lien);
                     creerJson(201, $objet);
+                    addLog("Ajout photo", "Ajout et upload de la photo ".$lien );
                 } else {
                     //error
                     creerJson(400, "Bad request");
+                    addLog("Ajout photo", "Erreur lors de l'ajout d'une photo" );
                 }
             }else {
                 creerJson(400, "Bad request");

@@ -98,8 +98,10 @@ if ($connexion["succes"]) {
                     if ($req->execute()) {
                         $id = $req->fetch(\PDO::FETCH_ASSOC);
                         creerJson(201, $id);
+                        addLog("Création état des lieux", "Création de l'état des lieux : ".$id['ID'] );
                     } else {
                         creerJson(400, "Bad request");
+                        
                         break;
                     }
                 } else {
@@ -109,11 +111,13 @@ if ($connexion["succes"]) {
                 }
             } else {
                 creerJson(400, "Bad request");
+                addLog("Création état des lieux", "Echec de création de l'état des lieux 'bad request'" );
                 break;
             }
             break;
         default:
             creerJson(405, "Method Not Allowed");
+            addLog("Création état des lieux", "Usage d'une mauvaise méthode" );
             break;
     }
 }

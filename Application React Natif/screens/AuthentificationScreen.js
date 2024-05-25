@@ -10,7 +10,7 @@ export default function AuthentificationScreen() {
   const mdp = route.params?.mdp
   const [responseData, setResponseData] = useState({})
   const [isLoading, setLoading] = useState(true)
-  const link = 'http://192.168.56.1/api/authentification.php'
+  const link = 'http://192.168.1.30/api/authentification.php'
 
   useEffect(() => {
     console.log(login)
@@ -28,6 +28,7 @@ export default function AuthentificationScreen() {
       .then(function (response) {
         console.log('traitement réponse')
         console.log(response)
+        console.log(response.text)
         return response.json()
       })
       .then(

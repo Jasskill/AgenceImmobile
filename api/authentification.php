@@ -31,9 +31,11 @@ if ($connexion["succes"]) {
                             $utilisateur = $req->fetch(\PDO::FETCH_ASSOC);
 
                             creerJson(200, $utilisateur);
+                            addLog("Connexion", "Tentative de connexion au compte N°".$utilisateur["id"]." : réussi");
                             break;
                         } else {
                             creerJson(401, "Unauthorized : Email ou mot de passe incorrect");
+                            addLog("Connexion", "Tentative de connexion avec le mail '".$json->mail."' : échec");
                             break;
                         }
                     } else {
@@ -52,6 +54,7 @@ if ($connexion["succes"]) {
             break;
         default:
             creerJson(405, "Method Not Allowed");
+            addLog("Connexion", "Usage d'une mauvaise méthode" );
             break;
     }
 }
